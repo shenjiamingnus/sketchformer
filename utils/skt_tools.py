@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw
 from rdp import rdp # pip install rdp
 # from IPython.display import SVG, display
 from svgpathtools import real, imag, svg2paths, wsvg  # pip install git+https://github.com/mathandy/svgpathtools#egg=svgpathtools
-
+import potrace
 
 def slerp(p0, p1, t):
     """Spherical interpolation."""
@@ -365,3 +365,18 @@ def draw_lines(lines, image_shape=(256, 256), background_pixel=255, colour=False
 def svg_to_png(in_svg, out_png):
     from cairosvg import svg2png
     svg2png(open(in_svg, 'rb').read(), write_to=open(out_png, 'wb'))
+
+if __name__ == '__main__':
+    image = Image.open('/share/kuhu6123/atd12k_points/atd12k_points/train_10k/Japan_0_99411_s2/frame1.jpg')
+
+    # 转换为灰度图像
+    image = image.convert('L')
+
+    # 将灰度图像转换为位图
+    bitmap = potrace.Bitmap(image)
+
+    # 进行追踪
+    path = bitmap.trace()
+
+    # 创建SVG文件
+    path.save_svg('output.svg')
